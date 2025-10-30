@@ -3,224 +3,396 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Анимированная заставка</title>
+    <title>Перо выписывает слова</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
             font-family: 'Georgia', serif;
+            overflow: hidden;
+            color: #f5f5f5;
         }
         
         .container {
             position: relative;
-            width: 800px;
-            height: 500px;
+            width: 100%;
+            max-width: 900px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .parchment {
+            position: absolute;
+            width: 90%;
+            height: 80%;
+            background: #f5e9c9;
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .parchment::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.1"><path d="M0 0h100v100H0z" fill="none"/><path d="M20 20h60v60H20z" stroke="%238B4513" stroke-width="2" fill="none"/></svg>');
+            opacity: 0.3;
         }
         
         .feather {
             position: absolute;
-            top: 50px;
-            left: 100px;
-            width: 100px;
+            width: 120px;
             height: 200px;
-            transform-origin: 50% 20px;
-            animation: featherMovement 25s infinite;
+            transform-origin: 60px 30px;
             z-index: 10;
+            transition: transform 0.1s ease;
         }
         
         .feather-body {
             position: absolute;
             width: 8px;
-            height: 180px;
+            height: 160px;
             background: linear-gradient(to bottom, #8B4513, #D2B48C);
             border-radius: 4px;
-            transform: rotate(-5deg);
+            left: 56px;
+            top: 30px;
+            transform: rotate(5deg);
         }
         
         .feather-vane {
             position: absolute;
-            top: 0;
-            left: -40px;
             width: 80px;
             height: 120px;
-            background: linear-gradient(45deg, #f5f5f5, #e8e8e8);
+            background: linear-gradient(45deg, #f8f8f8, #e8e8e8);
             border-radius: 50% 0 50% 50%;
+            left: 20px;
+            top: 10px;
             transform: rotate(-10deg);
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
         
-        .text-container {
+        .writing-area {
             position: absolute;
-            top: 100px;
-            left: 250px;
-            width: 500px;
-            height: 300px;
+            width: 80%;
+            height: 70%;
+            top: 15%;
+            left: 10%;
+            z-index: 2;
         }
         
         .word {
             position: absolute;
             font-size: 42px;
-            color: #f8f8f8;
-            opacity: 0;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            color: #2c1810;
             font-weight: bold;
             letter-spacing: 2px;
+            opacity: 0;
+            font-family: 'Cormorant Garamond', 'Georgia', serif;
         }
         
         #spirituality {
-            animation: fadeInOut 25s 0s infinite;
+            top: 10%;
+            left: 15%;
         }
         
         #morality {
-            animation: fadeInOut 25s 5s infinite;
+            top: 25%;
+            left: 20%;
         }
         
         #nobility {
-            animation: fadeInOut 25s 10s infinite;
+            top: 40%;
+            left: 25%;
         }
         
         #ethics {
-            animation: fadeInOut 25s 15s infinite;
+            top: 55%;
+            left: 30%;
         }
         
         #justice {
-            animation: fadeInOut 25s 20s infinite;
+            top: 70%;
+            left: 35%;
         }
         
         .ink-trail {
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: #f8f8f8;
-            border-radius: 50%;
-            box-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
-            opacity: 0;
-        }
-        
-        @keyframes featherMovement {
-            0%, 100% {
-                transform: translate(0, 0) rotate(-5deg);
-            }
-            10% {
-                transform: translate(200px, 50px) rotate(5deg);
-            }
-            20% {
-                transform: translate(150px, 100px) rotate(-10deg);
-            }
-            30% {
-                transform: translate(300px, 30px) rotate(15deg);
-            }
-            40% {
-                transform: translate(250px, 150px) rotate(-15deg);
-            }
-            50% {
-                transform: translate(400px, 80px) rotate(10deg);
-            }
-            60% {
-                transform: translate(350px, 180px) rotate(-5deg);
-            }
-            70% {
-                transform: translate(450px, 120px) rotate(5deg);
-            }
-            80% {
-                transform: translate(380px, 220px) rotate(-10deg);
-            }
-            90% {
-                transform: translate(480px, 160px) rotate(15deg);
-            }
-        }
-        
-        @keyframes fadeInOut {
-            0%, 20% {
-                opacity: 0;
-            }
-            5%, 15% {
-                opacity: 1;
-            }
-        }
-        
-        .gold-dust {
-            position: absolute;
             width: 6px;
             height: 6px;
-            background: radial-gradient(circle, #FFD700, transparent);
+            background: #2c1810;
             border-radius: 50%;
+            pointer-events: none;
+            z-index: 5;
             opacity: 0;
-            animation: goldDust 2s infinite;
+            transition: opacity 0.3s;
         }
         
-        @keyframes goldDust {
-            0% {
-                transform: translate(0, 0);
-                opacity: 0.8;
-            }
-            100% {
-                transform: translate(20px, 20px);
-                opacity: 0;
-            }
+        .title {
+            position: absolute;
+            top: 30px;
+            font-size: 28px;
+            color: #f5e9c9;
+            text-align: center;
+            width: 100%;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            z-index: 2;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 2;
+        }
+        
+        button {
+            background: #8B4513;
+            color: #f5e9c9;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-family: 'Georgia', serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:hover {
+            background: #A0522D;
+            transform: translateY(-2px);
+        }
+        
+        .instructions {
+            position: absolute;
+            bottom: 80px;
+            color: #f5e9c9;
+            text-align: center;
+            font-size: 16px;
+            width: 100%;
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="feather">
-            <div class="feather-body"></div>
-            <div class="feather-vane"></div>
-        </div>
+        <div class="title">Перо Мудрости</div>
         
-        <div class="text-container">
+        <div class="parchment"></div>
+        
+        <div class="writing-area">
             <div id="spirituality" class="word">Духовность</div>
             <div id="morality" class="word">Нравственность</div>
             <div id="nobility" class="word">Благородство</div>
             <div id="ethics" class="word">Этика</div>
             <div id="justice" class="word">Справедливость</div>
         </div>
+        
+        <div class="feather">
+            <div class="feather-vane"></div>
+            <div class="feather-body"></div>
+        </div>
+        
+        <div class="instructions">Нажмите "Начать писать", чтобы увидеть, как перо выводит слова</div>
+        
+        <div class="controls">
+            <button id="startBtn">Начать писать</button>
+            <button id="resetBtn">Сбросить</button>
+        </div>
     </div>
 
     <script>
-        // Создание следов чернил
-        function createInkTrails() {
-            const container = document.querySelector('.container');
-            const trails = [];
+        document.addEventListener('DOMContentLoaded', function() {
+            const feather = document.querySelector('.feather');
+            const startBtn = document.getElementById('startBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const words = document.querySelectorAll('.word');
+            const writingArea = document.querySelector('.writing-area');
             
-            // Создаем следы чернил вдоль пути пера
-            for (let i = 0; i < 100; i++) {
+            let isWriting = false;
+            let currentWordIndex = 0;
+            let currentLetterIndex = 0;
+            let inkTrails = [];
+            
+            // Координаты для каждого слова (начальная позиция пера)
+            const wordPositions = [
+                { x: 150, y: 80 },   // Духовность
+                { x: 180, y: 150 },  // Нравственность
+                { x: 210, y: 220 },  // Благородство
+                { x: 240, y: 290 },  // Этика
+                { x: 270, y: 360 }   // Справедливость
+            ];
+            
+            // Функция для создания следа чернил
+            function createInkTrail(x, y) {
                 const trail = document.createElement('div');
                 trail.className = 'ink-trail';
-                container.appendChild(trail);
-                trails.push(trail);
+                trail.style.left = x + 'px';
+                trail.style.top = y + 'px';
+                writingArea.appendChild(trail);
+                inkTrails.push(trail);
                 
-                // Анимация появления следов с задержкой
+                // Показываем след
                 setTimeout(() => {
-                    trail.style.opacity = '0.7';
+                    trail.style.opacity = '0.9';
+                }, 10);
+                
+                // Убираем след через некоторое время
+                setTimeout(() => {
+                    trail.style.opacity = '0';
                     setTimeout(() => {
-                        trail.style.opacity = '0';
-                    }, 2000);
-                }, i * 250);
+                        if (trail.parentNode) {
+                            trail.parentNode.removeChild(trail);
+                        }
+                    }, 1000);
+                }, 2000);
             }
             
-            // Создаем золотую пыль
-            setInterval(() => {
-                const dust = document.createElement('div');
-                dust.className = 'gold-dust';
-                dust.style.left = Math.random() * 800 + 'px';
-                dust.style.top = Math.random() * 500 + 'px';
-                container.appendChild(dust);
+            // Анимация движения пера
+            function animateFeather(x, y, duration, callback) {
+                feather.style.transition = `all ${duration}ms linear`;
+                feather.style.left = (x - 60) + 'px';
+                feather.style.top = (y - 30) + 'px';
+                
+                // Добавляем наклон пера в зависимости от направления движения
+                const currentX = parseInt(feather.style.left) || 0;
+                const angle = x > currentX ? 5 : -5;
+                feather.style.transform = `rotate(${angle}deg)`;
                 
                 setTimeout(() => {
-                    dust.remove();
-                }, 2000);
-            }, 300);
-        }
-        
-        // Запуск анимации после загрузки страницы
-        window.onload = createInkTrails;
+                    if (callback) callback();
+                }, duration);
+            }
+            
+            // Функция для "написания" слова
+            function writeWord(wordIndex) {
+                if (wordIndex >= words.length) {
+                    isWriting = false;
+                    return;
+                }
+                
+                const word = words[wordIndex];
+                const wordText = word.textContent;
+                const wordRect = word.getBoundingClientRect();
+                const writingAreaRect = writingArea.getBoundingClientRect();
+                
+                // Показываем слово (прозрачное)
+                word.style.opacity = '0.2';
+                
+                // Начальная позиция пера для этого слова
+                const startPos = wordPositions[wordIndex];
+                
+                // Перемещаем перо к началу слова
+                animateFeather(startPos.x, startPos.y, 800, () => {
+                    // Начинаем писать слово по буквам
+                    writeLetter(wordIndex, 0);
+                });
+            }
+            
+            // Функция для "написания" буквы
+            function writeLetter(wordIndex, letterIndex) {
+                const word = words[wordIndex];
+                const wordText = word.textContent;
+                
+                if (letterIndex >= wordText.length) {
+                    // Слово полностью написано
+                    word.style.opacity = '1';
+                    currentWordIndex++;
+                    currentLetterIndex = 0;
+                    
+                    // Небольшая пауза перед следующим словом
+                    setTimeout(() => {
+                        writeWord(currentWordIndex);
+                    }, 1000);
+                    return;
+                }
+                
+                // Получаем позицию для текущей буквы (упрощенная версия)
+                const wordRect = word.getBoundingClientRect();
+                const writingAreaRect = writingArea.getBoundingClientRect();
+                
+                const letterWidth = wordRect.width / wordText.length;
+                const x = wordRect.left - writingAreaRect.left + (letterIndex * letterWidth) + (letterWidth / 2);
+                const y = wordRect.top - writingAreaRect.top + (wordRect.height / 2);
+                
+                // Двигаем перо к позиции буквы
+                animateFeather(x, y, 300, () => {
+                    // Создаем след чернил
+                    createInkTrail(x, y);
+                    
+                    // Переходим к следующей букве
+                    currentLetterIndex++;
+                    setTimeout(() => {
+                        writeLetter(wordIndex, currentLetterIndex);
+                    }, 200);
+                });
+            }
+            
+            // Обработчики кнопок
+            startBtn.addEventListener('click', function() {
+                if (isWriting) return;
+                
+                isWriting = true;
+                currentWordIndex = 0;
+                currentLetterIndex = 0;
+                
+                // Скрываем все слова
+                words.forEach(word => {
+                    word.style.opacity = '0';
+                });
+                
+                // Начинаем анимацию
+                writeWord(currentWordIndex);
+            });
+            
+            resetBtn.addEventListener('click', function() {
+                // Сбрасываем анимацию
+                isWriting = false;
+                currentWordIndex = 0;
+                currentLetterIndex = 0;
+                
+                // Скрываем все слова
+                words.forEach(word => {
+                    word.style.opacity = '0';
+                });
+                
+                // Убираем все следы чернил
+                inkTrails.forEach(trail => {
+                    if (trail.parentNode) {
+                        trail.parentNode.removeChild(trail);
+                    }
+                });
+                inkTrails = [];
+                
+                // Возвращаем перо в начальное положение
+                feather.style.transition = 'all 1s ease';
+                feather.style.left = '100px';
+                feather.style.top = '200px';
+                feather.style.transform = 'rotate(5deg)';
+            });
+            
+            // Изначально скрываем слова
+            words.forEach(word => {
+                word.style.opacity = '0';
+            });
+        });
     </script>
 </body>
 </html>
