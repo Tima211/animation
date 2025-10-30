@@ -38,29 +38,15 @@
             z-index: 1;
         }
         
-        .parchment::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                linear-gradient(90deg, transparent 95%, rgba(139, 69, 19, 0.1) 100%),
-                linear-gradient(rgba(139, 69, 19, 0.1) 1px, transparent 1px);
-            background-size: 100% 24px;
-            opacity: 0.5;
-        }
-        
         .feather {
             position: absolute;
             width: 120px;
             height: 200px;
             transform-origin: 60px 30px;
             z-index: 10;
-            left: 100px;
-            top: 200px;
-            transition: all 0.2s ease;
+            left: 50px;
+            top: 50px;
+            transition: all 0.5s ease-in-out;
         }
         
         .feather-body {
@@ -106,27 +92,27 @@
         
         #spirituality {
             top: 50px;
-            left: 100px;
+            left: 150px;
         }
         
         #morality {
             top: 120px;
-            left: 100px;
+            left: 150px;
         }
         
         #nobility {
             top: 190px;
-            left: 100px;
+            left: 150px;
         }
         
         #ethics {
             top: 260px;
-            left: 100px;
+            left: 150px;
         }
         
         #justice {
             top: 330px;
-            left: 100px;
+            left: 150px;
         }
         
         .ink-trail {
@@ -194,7 +180,15 @@
             const writingArea = document.querySelector('.writing-area');
             
             let currentWordIndex = 0;
-            let animationActive = true;
+            
+            // Позиции для пера рядом с каждым словом
+            const featherPositions = [
+                { x: 80, y: 70 },   // Для "Духовность"
+                { x: 80, y: 140 },  // Для "Нравственность"  
+                { x: 80, y: 210 },  // Для "Благородство"
+                { x: 80, y: 280 },  // Для "Этика"
+                { x: 80, y: 350 }   // Для "Справедливость"
+            ];
             
             // Функция для создания следа чернил
             function createInkTrail(x, y) {
@@ -204,12 +198,8 @@
                 trail.style.top = y + 'px';
                 writingArea.appendChild(trail);
                 
-                // Показываем след
-                setTimeout(() => {
-                    trail.style.opacity = '0.9';
-                }, 10);
+                trail.style.opacity = '0.9';
                 
-                // Убираем след через некоторое время
                 setTimeout(() => {
                     trail.style.opacity = '0';
                     setTimeout(() => {
@@ -235,90 +225,77 @@
                 }, 1000);
             }
             
-            // Анимация движения пера к слову
-            function moveFeatherToWord(wordIndex, callback) {
-                if (!animationActive) return;
-                
-                const word = words[wordIndex];
-                const wordRect = word.getBoundingClientRect();
-                const containerRect = writingArea.getBoundingClientRect();
-                
-                const targetX = wordRect.left - containerRect.left + 50;
-                const targetY = wordRect.top - containerRect.top + 25;
-                
-                // Анимация перемещения пера
-                feather.style.transition = 'all 1s ease-in-out';
-                feather.style.left = (targetX - 60) + 'px';
-                feather.style.top = (targetY - 30) + 'px';
-                feather.style.transform = 'rotate(5deg)';
-                
-                setTimeout(() => {
-                    if (callback) callback();
-                }, 1000);
-            }
-            
-            // Анимация написания слова
-            function writeWord(wordIndex) {
-                if (!animationActive || wordIndex >= words.length) {
-                    // Завершаем анимацию или перезапускаем
-                    setTimeout(() => {
-                        resetAnimation();
-                    }, 2000);
+            // Анимация движения пера
+            function animateFeatherMovement() {
+                if (currentWordIndex >= words.length) {
+                    // Все слова написаны, перезапускаем анимацию
+                    setTimeout(resetAnimation, 2000);
                     return;
                 }
                 
-                const word = words[wordIndex];
-                const wordText = word.textContent;
+                const word = words[currentWordIndex];
+                const position = featherPositions[currentWordIndex];
+                
+                // Двигаем перо к позиции
+                feather.style.left = position.x + 'px';
+                feather.style.top = position.y + 'px';
+                feather.style.transform = 'rotate(5deg)';
                 
                 // Показываем слово полупрозрачным
                 word.style.opacity = '0.3';
                 
-                // Перемещаем перо к слову
-                moveFeatherToWord(wordIndex, () => {
-                    // Начинаем анимацию письма
-                    animateWriting(word, wordText, 0, () => {
+                // Анимация письма
+                setTimeout(() => {
+                    animateWriting(word);
+                }, 800);
+            }
+            
+            // Анимация написания слова
+            function animateWriting(word) {
+                const wordRect = word.getBoundingClientRect();
+                const containerRect = writingArea.getBoundingClientRect();
+                const text = word.textContent;
+                const letterCount = text.length;
+                
+                let currentLetter = 0;
+                
+                function writeNextLetter() {
+                    if (currentLetter >= letterCount) {
                         // Слово полностью написано
                         word.style.opacity = '1';
                         currentWordIndex++;
                         
-                        // Переходим к следующему слову
+                        // Легкое подрагивание пера в конце слова
+                        feather.style.transform = 'rotate(8deg)';
                         setTimeout(() => {
-                            writeWord(currentWordIndex);
-                        }, 800);
-                    });
-                });
-            }
-            
-            // Анимация написания букв
-            function animateWriting(word, text, index, callback) {
-                if (index >= text.length || !animationActive) {
-                    if (callback) callback();
-                    return;
+                            feather.style.transform = 'rotate(5deg)';
+                            
+                            // Переходим к следующему слову
+                            setTimeout(animateFeatherMovement, 500);
+                        }, 200);
+                        
+                        return;
+                    }
+                    
+                    // Создаем эффект письма для текущей буквы
+                    const letterX = wordRect.left - containerRect.left + (currentLetter * (wordRect.width / letterCount)) + 20;
+                    const letterY = wordRect.top - containerRect.top + 25;
+                    
+                    createInkTrail(letterX, letterY);
+                    
+                    // Случайные искры
+                    if (Math.random() > 0.8) {
+                        createSparkle(letterX, letterY);
+                    }
+                    
+                    // Легкое покачивание пера
+                    feather.style.transform = `rotate(${5 + Math.sin(Date.now() * 0.01) * 3}deg)`;
+                    
+                    currentLetter++;
+                    setTimeout(writeNextLetter, 120);
                 }
                 
-                const wordRect = word.getBoundingClientRect();
-                const containerRect = writingArea.getBoundingClientRect();
-                
-                // Вычисляем позицию для текущей буквы
-                const letterWidth = wordRect.width / text.length;
-                const x = wordRect.left - containerRect.left + (index * letterWidth) + (letterWidth / 2);
-                const y = wordRect.top - containerRect.top + (wordRect.height / 2);
-                
-                // Создаем след чернил
-                createInkTrail(x, y);
-                
-                // Создаем искры
-                if (Math.random() > 0.7) {
-                    createSparkle(x, y);
-                }
-                
-                // Наклон пера при письме
-                feather.style.transform = `rotate(${5 + Math.sin(Date.now() * 0.01) * 3}deg)`;
-                
-                // Переходим к следующей букве
-                setTimeout(() => {
-                    animateWriting(word, text, index + 1, callback);
-                }, 150);
+                writeNextLetter();
             }
             
             // Сброс анимации
@@ -329,24 +306,19 @@
                 });
                 
                 // Возвращаем перо в начальное положение
-                feather.style.transition = 'all 1.5s ease';
-                feather.style.left = '100px';
-                feather.style.top = '200px';
+                feather.style.left = '50px';
+                feather.style.top = '50px';
                 feather.style.transform = 'rotate(5deg)';
                 
                 // Сбрасываем индекс
                 currentWordIndex = 0;
                 
                 // Перезапускаем анимацию
-                setTimeout(() => {
-                    writeWord(currentWordIndex);
-                }, 1000);
+                setTimeout(animateFeatherMovement, 1000);
             }
             
             // Запуск анимации
-            setTimeout(() => {
-                writeWord(currentWordIndex);
-            }, 500);
+            setTimeout(animateFeatherMovement, 500);
         });
     </script>
 </body>
